@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KI-KÍN M&C | Menú Digital Premium</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #0f0f0f;
+            --bg-card: #1e1e1e;
+            --bg-nav: rgba(15, 15, 15, 0.95);
+            --primary: #FF4500; /* Naranja Fuego */
+            --primary-dark: #cc3700;
+            --text-white: #ffffff;
+            --text-gray: #a3a3a3;
+            --accent-gold: #FFD700;
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-white);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 120px; /* Espacio extra para la barra del carrito */
+        }
+
+        /* --- ANIMACIONES SCROLL REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- UTILIDADES --- */
+        .container { width: 92%; max-width: 1100px; margin: 0 auto; }
+        .btn { border: none; outline: none; cursor: pointer; font-family: inherit; transition: var(--transition); }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 0.5rem; text-align: center; color: white; }
+        .section-subtitle { color: var(--text-gray); text-align: center; margin-bottom: 3rem; font-size: 1rem; }
+        .highlight { color: var(--primary); }
+
+        /* --- HEADER & NAV RESPONSIVE --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: var(--bg-nav); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 1rem 0;
+        }
+        
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: white; text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* Menú Hamburguesa */
+        .hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: white; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-link { color: var(--text-white); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+        .nav-link:hover { color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .nav-menu {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background: #1a1a1a; flex-direction: column; align-items: center;
+                padding: 0; max-height: 0; overflow: hidden;
+                transition: max-height 0.4s ease; border-bottom: 1px solid rgba(255,255,255,0.1);
+                gap: 0;
+            }
+            .nav-menu.open { max-height: 350px; }
+            .nav-menu li { width: 100%; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .nav-link { display: block; padding: 1.5rem; }
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 85vh; min-height: 500px;
+            background: linear-gradient(to top, var(--bg-body), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; position: relative;
+        }
+        .hero-content { max-width: 700px; padding: 20px; z-index: 1; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1rem; text-shadow: 0 4px 30px rgba(0,0,0,0.8); }
+        .hero p { font-size: 1.1rem; color: #e0e0e0; margin-bottom: 2rem; }
+        .btn-hero {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white; padding: 1rem 2.5rem; border-radius: 50px;
+            font-weight: 800; font-size: 1rem; box-shadow: 0 4px 20px rgba(255, 69, 0, 0.5);
+            text-decoration: none; display: inline-block; transition: 0.3s;
+        }
+        .btn-hero:hover { transform: scale(1.05); }
+
+        /* --- SECCIÓN VIDEO (GOOGLE DRIVE) --- */
+        .video-section { padding: 3rem 0; background: #141414; }
+        .video-container {
+            position: relative; padding-bottom: 56.25%; /* 16:9 */
+            height: 0; overflow: hidden; border-radius: var(--radius);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            background: #000;
+        }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .video-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #666;
+        }
+
+        /* --- FAVORITOS (IRRESISTIBLES) --- */
+        .favorites { padding: 4rem 0; }
+        .fav-scroll { 
+            display: flex; gap: 1.5rem; overflow-x: auto; padding: 1rem 5%; 
+            scrollbar-width: none; 
+        }
+        .fav-scroll::-webkit-scrollbar { display: none; }
+        
+        .fav-card {
+            min-width: 300px; background: var(--bg-card);
+            border-radius: var(--radius); overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: var(--transition); cursor: pointer;
+        }
+        .fav-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .fav-img { width: 100%; height: 220px; object-fit: cover; }
+        .fav-badge { 
+            position: absolute; top: 15px; left: 15px; 
+            background: var(--accent-gold); color: black; font-weight: 800; 
+            padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; 
+            text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .fav-info { padding: 1.5rem; }
+        .fav-title { font-family: 'Playfair Display'; font-size: 1.4rem; margin-bottom: 5px; }
+        .fav-price { color: var(--primary); font-weight: 800; font-size: 1.3rem; display: block; margin-top: 5px; }
+
+        /* --- CARTA (MENU GRID) --- */
+        .menu-section { padding: 3rem 0; }
+        .menu-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+        }
+        @media(min-width: 768px) { .menu-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); } }
+
+        .menu-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; cursor: pointer; transition: var(--transition);
+        }
+        .menu-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .menu-img-small { width: 100%; height: 160px; object-fit: cover; }
+        .menu-content { padding: 1.2rem; flex-grow: 1; display: flex; flex-direction: column; }
+        .menu-title { font-weight: 700; margin-bottom: 0.5rem; font-size: 1rem; }
+        .menu-desc { font-size: 0.85rem; color: var(--text-gray); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem; }
+        .menu-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+        .btn-add { 
+            background: rgba(255,255,255,0.1); color: white; 
+            width: 35px; height: 35px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; transition: 0.2s; 
+        }
+        .btn-add:hover { background: var(--primary); }
+
+        /* --- CLIENTES --- */
+        .customers { padding: 4rem 0; background: #151515; }
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px; margin-top: 2rem;
+        }
+        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; position: relative; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 15px; font-size: 0.85rem; font-weight: 600; color: white;
+        }
+
+        /* --- FOOTER --- */
+        footer { background: black; padding: 4rem 0 6rem; text-align: center; border-top: 1px solid #222; }
+        .social-links { display: flex; justify-content: center; gap: 1.5rem; margin: 1.5rem 0; }
+        .social-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: #222; color: white; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; transition: 0.3s; font-size: 1.2rem;
+        }
+        .social-btn:hover { background: var(--primary); transform: translateY(-3px); }
+
+        /* --- BARRA CARRITO INFERIOR (Sticky) --- */
+        .bottom-cart-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #1a1a1a; padding: 15px 20px;
+            border-top: 3px solid var(--primary);
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.6);
+            z-index: 2000;
+            display: flex; justify-content: space-between; align-items: center;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bottom-cart-bar.visible { transform: translateY(0); }
+        
+        .cart-info { display: flex; flex-direction: column; }
+        .cart-count-text { color: #888; font-size: 0.85rem; font-weight: 600; }
+        .cart-total-text { color: white; font-size: 1.3rem; font-weight: 800; }
+        
+        .btn-view-cart {
+            background: var(--primary); color: white;
+            padding: 12px 25px; border-radius: 50px;
+            font-weight: 700; font-size: 1rem;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 15px rgba(255,69,0,0.3);
+        }
+
+        /* --- MODAL PRODUCTO --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s;
+            display: flex; justify-content: center; align-items: flex-end;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-sheet {
+            background: #181818; width: 100%; max-width: 500px;
+            height: 90vh; border-radius: 24px 24px 0 0;
+            overflow-y: auto; transform: translateY(100%); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative; display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-sheet { transform: translateY(0); }
+        
+        .modal-scroll-content { flex-grow: 1; overflow-y: auto; padding-bottom: 20px; }
+        .modal-header-img { width: 100%; height: 250px; object-fit: cover; }
+        
+        .modal-close {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(0,0,0,0.6); color: white;
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; border: none; z-index: 10;
+        }
+        .modal-body { padding: 1.5rem; }
+
+        /* Controles Cantidad Visibles */
+        .qty-control-lg {
+            display: flex; align-items: center; gap: 15px;
+            background: #2a2a2a; padding: 5px; border-radius: 12px;
+            border: 1px solid #444; margin-right: 15px;
+        }
+        .qty-btn-lg {
+            width: 45px; height: 45px; border-radius: 8px;
+            background: #444; color: white;
+            font-size: 1.4rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .qty-btn-lg:active { background: var(--primary); }
+
+        /* Grid Opciones Salsas */
+        .sauces-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .sauce-option {
+            background: #252525; border-radius: 12px; padding: 12px;
+            display: flex; align-items: center; gap: 10px;
+            border: 2px solid transparent; cursor: pointer;
+        }
+        .sauce-option.selected { border-color: var(--primary); background: rgba(255, 69, 0, 0.1); }
+        .sauce-option span { font-weight: 600; font-size: 0.9rem; }
+        .radio-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #666; display: flex; align-items: center; justify-content: center; }
+        .sauce-option.selected .radio-circle { background: var(--primary); border-color: var(--primary); }
+
+        /* Lista Bebidas */
+        .drink-option {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #252525; padding: 15px; margin-bottom: 10px;
+            border-radius: 12px; cursor: pointer; border: 1px solid transparent;
+        }
+        .drink-option.selected { border-color: var(--primary); background: rgba(255,69,0,0.05); }
+        .drink-option.selected .radio-circle { background: var(--primary); border-color: var(--primary); }
+
+        /* Footer Modal */
+        .modal-footer-fixed {
+            padding: 15px 20px; background: #1a1a1a;
+            border-top: 1px solid #333; display: flex; align-items: center;
+        }
+        .btn-add-confirm {
+            flex-grow: 1; height: 50px; border-radius: 12px;
+            background: var(--primary); color: white;
+            font-weight: 800; font-size: 1.1rem;
+            display: flex; justify-content: space-between; padding: 0 20px; align-items: center;
+            box-shadow: 0 5px 15px rgba(255,69,0,0.4);
+        }
+
+        /* --- CART DRAWER (Lateral) --- */
+        .cart-drawer {
+            position: fixed; top: 0; right: 0; width: 100%; max-width: 400px;
+            height: 100%; background: #121212; z-index: 4000;
+            transform: translateX(100%); transition: transform 0.3s ease;
+            display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,0.9);
+        }
+        .cart-drawer.open { transform: translateX(0); }
+        
+        .cart-header { padding: 20px; background: #1a1a1a; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .cart-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
+        .cart-item {
+            background: #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; position: relative;
+            border-left: 3px solid var(--primary);
+        }
+        .cart-footer { padding: 20px; background: #1a1a1a; border-top: 1px solid #333; }
+        .btn-whatsapp {
+            width: 100%; background: #25D366; color: white;
+            padding: 15px; border-radius: 12px; font-weight: 800; font-size: 1.1rem;
+            display: flex; justify-content: center; gap: 10px; align-items: center;
+            box-shadow: 0 5px 15px rgba(37,211,102,0.3);
+        }
+
+        /* --- BOTÓN FLOTANTE WSP --- */
+        .wsp-float {
+            position: fixed; bottom: 100px; right: 20px;
+            background: #25D366; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: white; box-shadow: 0 4px 15px rgba(37,211,102,0.4);
+            z-index: 1000; text-decoration: none;
+        }
+
+        /* Ajustes Desktop */
+        @media (min-width: 768px) {
+            .modal-overlay { align-items: center; }
+            .modal-sheet { height: auto; max-height: 85vh; border-radius: 24px; width: 500px; margin: 20px; }
+            .bottom-cart-bar { width: 400px; left: auto; right: 20px; bottom: 20px; border-radius: 16px; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">KI-KÍN <span>M&C</span></a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link" onclick="toggleMenu()">Inicio</a></li>
+                <li><a href="#video" class="nav-link" onclick="toggleMenu()">Experiencia</a></li>
+                <li><a href="#favoritos" class="nav-link" onclick="toggleMenu()">Irresistibles</a></li>
+                <li><a href="#menu" class="nav-link" onclick="toggleMenu()">Carta</a></li>
+                <li><a href="#clientes" class="nav-link" onclick="toggleMenu()">Clientes</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section id="inicio" class="hero">
+        <div class="hero-content reveal">
+            <span style="color: var(--primary); letter-spacing: 3px; font-weight: 800; font-size: 0.9rem; text-transform: uppercase;">Sabor Peruano</span>
+            <h1>El Verdadero Sabor a <br><span class="highlight">Carbón y Leña</span></h1>
+            <p>Pollos dorados, parrillas jugosas y el toque ahumado que nos hace únicos.</p>
+            <a href="#menu" class="btn-hero">Ordenar Ahora</a>
+        </div>
+    </section>
+
+    <section id="video" class="video-section reveal">
+        <div class="container">
+            <h2 class="section-title">Nuestra Experiencia</h2>
+            <p class="section-subtitle">Mira cómo preparamos nuestros platos</p>
+            
+         <div class="video-container">
+    <iframe 
+        src="https://drive.google.com/file/d/12r4wOlXYOdHGTRIvpeoFm4qK3J_Dx35A/preview" 
+        width="640" 
+        height="480" 
+        allow="autoplay" 
+        style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;">
+    </iframe>
+</div>
+        </div>
+    </section>
+
+    <section id="favoritos" class="favorites reveal">
+        <div class="container">
+            <h2 class="section-title">Irresistibles <i class="fas fa-fire" style="color:var(--primary)"></i></h2>
+            <p class="section-subtitle">Los 3 platos que tienes que probar sí o sí</p>
+            
+            <div class="fav-scroll">
+                <div class="fav-card" onclick="openProductModal(1)">
+                    <span class="fav-badge">Top Seller</span>
+                    <img src="https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=600" class="fav-img">
+                    <div class="fav-info">
+                        <h3 class="fav-title">Pollo a la Leña Entero</h3>
+                        <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">Con papas nativas, ensalada y gaseosa.</p>
+                        <span class="fav-price">S/ 68.00</span>
+                    </div>
+                </div>
+                <div class="fav-card" onclick="openProductModal(3)">
+                    <span class="fav-badge">Recomendado</span>
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600" class="fav-img">
+                    <div class="fav-info">
+                        <h3 class="fav-title">Parrilla Mixta Royal</h3>
+                        <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">Lomo, chuleta, chorizo y anticucho.</p>
+                        <span class="fav-price">S/ 48.00</span>
+                    </div>
+                </div>
+                <div class="fav-card" onclick="openProductModal(4)">
+                    <span class="fav-badge">Tradición</span>
+                    <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=600" class="fav-img">
+                    <div class="fav-info">
+                        <h3 class="fav-title">Anticuchos Corazón</h3>
+                        <p style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">2 palitos con papa dorada y choclo.</p>
+                        <span class="fav-price">S/ 26.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="menu-section reveal">
+        <div class="container">
+            <h2 class="section-title">Nuestra Carta</h2>
+            <p class="section-subtitle">Explora todos nuestros sabores</p>
+            <div class="menu-grid" id="menuGrid">
+                </div>
+        </div>
+    </section>
+
+    <section id="clientes" class="customers reveal">
+        <div class="container">
+            <h2 class="section-title">Clientes Felices</h2>
+            <p class="section-subtitle">Momentos KI-KÍN</p>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1511690656952-34342d227410?q=80&w=400"><div class="gallery-overlay">Familia Pérez</div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=400"><div class="gallery-overlay">Cumpleaños</div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1555992336-fb0d29498b13?q=80&w=400"><div class="gallery-overlay">Parrillada</div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=400"><div class="gallery-overlay">Viernes</div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container reveal">
+            <a href="#" class="logo" style="font-size: 1.8rem;">KI-KÍN <span>M&C</span></a>
+            <div class="social-links">
+                <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <p style="color: #666; font-size: 0.9rem;">&copy; 2024 KI-KÍN M&C. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <div id="stickyCartBar" class="bottom-cart-bar">
+        <div class="cart-info">
+            <span class="cart-count-text" id="stickyCount">0 Ítems</span>
+            <span class="cart-total-text" id="stickyTotal">S/ 0.00</span>
+        </div>
+        <button class="btn btn-view-cart" onclick="toggleCart()">
+            Ver Carrito <i class="fas fa-shopping-bag"></i>
+        </button>
+    </div>
+
+    <a href="https://wa.me/51989435125" class="wsp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-sheet">
+            <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-scroll-content">
+                <img src="" id="mImg" class="modal-header-img">
+                <div class="modal-body">
+                    <h2 id="mTitle" style="font-family: 'Playfair Display'; font-size: 1.8rem; line-height: 1.1;">Nombre</h2>
+                    <p id="mDesc" style="color: #aaa; margin-bottom: 20px;">Descripción...</p>
+                    
+                    <h4 style="margin-top:20px;">Elige tus Salsas <small style="font-weight:400; color:#888;">(Max 3)</small></h4>
+                    <div class="sauces-grid">
+                        <div class="sauce-option" onclick="toggleSauce(this, 'Ají Pollero')">
+                            <div class="radio-circle"></div><span>🌶️ Ají Pollero</span>
+                        </div>
+                        <div class="sauce-option" onclick="toggleSauce(this, 'Mayonesa')">
+                            <div class="radio-circle"></div><span>🥚 Mayonesa</span>
+                        </div>
+                        <div class="sauce-option" onclick="toggleSauce(this, 'Ketchup')">
+                            <div class="radio-circle"></div><span>🍅 Ketchup</span>
+                        </div>
+                        <div class="sauce-option" onclick="toggleSauce(this, 'Vinagreta')">
+                            <div class="radio-circle"></div><span>🥗 Vinagreta</span>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top:20px; margin-bottom:10px;">Elige tu Bebida</h4>
+                    <div id="drinkList"></div>
+                </div>
+            </div>
+            
+            <div class="modal-footer-fixed">
+                <div class="qty-control-lg">
+                    <button class="btn qty-btn-lg" onclick="updateModalQty(-1)">−</button>
+                    <span id="modalQty" style="font-weight:700; width: 30px; text-align: center; color: white;">1</span>
+                    <button class="btn qty-btn-lg" onclick="updateModalQty(1)">+</button>
+                </div>
+                <button class="btn btn-add-confirm" onclick="addToCart()">
+                    <span>Agregar</span>
+                    <span id="modalTotalPrice">S/ 0.00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cartOverlay" style="z-index: 3500;" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2 style="font-family:'Playfair Display'; color: white;">Tu Pedido</h2>
+            <button class="btn" onclick="toggleCart()" style="color:white; font-size:1.5rem;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-body" id="cartItemsContainer">
+            <p style="text-align:center; color:#666; margin-top:50px;">Tu carrito está vacío</p>
+        </div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.3rem; font-weight:800; color:white;">
+                <span>Total</span>
+                <span id="cartDrawerTotal">S/ 0.00</span>
+            </div>
+            <button class="btn btn-whatsapp" onclick="checkoutWhatsApp()">
+                <i class="fab fa-whatsapp" style="font-size:1.4rem;"></i> Enviar Pedido
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* --- DATOS AMPLIADOS (10 PRODUCTOS) --- */
+        const products = [
+            { id: 1, name: "Pollo a la Leña Entero", price: 68.00, desc: "Ahumado intenso, papas nativas, ensalada y gaseosa.", img: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=600" },
+            { id: 2, name: "1/4 de Pollo Leña", price: 22.00, desc: "Pecho o pierna con papas doradas y ensalada fresca.", img: "https://images.unsplash.com/photo-1598103442097-8b7439453630?q=80&w=600" },
+            { id: 3, name: "Parrilla Mixta Royal", price: 48.00, desc: "Lomo fino, chuleta, chorizo, anticucho y papas.", img: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600" },
+            { id: 4, name: "Anticuchos de Corazón", price: 26.00, desc: "2 palitos marinados, papa dorada y choclo.", img: "https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=600" },
+            { id: 5, name: "Lomo Saltado Clásico", price: 38.00, desc: "Al wok con cebolla, tomate, papas fritas y arroz.", img: "https://images.unsplash.com/photo-1560611588-163f295eb145?q=80&w=600" },
+            { id: 6, name: "Chaufa de Pollo", price: 28.00, desc: "Arroz frito al wok con pollo, huevo y cebollita china.", img: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?q=80&w=600" },
+            { id: 7, name: "Mostrito (Chaufa + Pollo)", price: 32.00, desc: "La combinación perfecta: 1/8 de pollo + Chaufa.", img: "https://plus.unsplash.com/premium_photo-1661600135599-2d93e7774d61?q=80&w=600" },
+            { id: 8, name: "Hamburguesa Royal", price: 22.00, desc: "Carne artesanal, huevo, queso, tocino y papas.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600" },
+            { id: 9, name: "Salchipapa Frank", price: 18.00, desc: "Salchicha frankfurter, huevo frito y todas las cremas.", img: "https://images.unsplash.com/photo-1585109649139-3668018951a7?q=80&w=600" },
+            { id: 10, name: "Chicha Morada 1L", price: 12.00, desc: "Casera de maíz morado y frutas. Sin preservantes.", img: "https://images.unsplash.com/photo-1605867272871-4f2cb987531e?q=80&w=600" }
+        ];
+
+        const drinksOptions = [
+            { name: "Inca Kola 500ml", price: 0 },
+            { name: "Coca Cola 500ml", price: 0 },
+            { name: "Chicha Morada Vaso", price: 4 }
+        ];
+
+        /* --- ESTADO --- */
+        let cart = [];
+        let currentProduct = null;
+        let tempQty = 1;
+        let tempSauces = [];
+        let tempDrink = drinksOptions[0];
+
+        /* --- MENU HAMBURGUESA --- */
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('open');
+        }
+
+        /* --- RENDER CARTA --- */
+        const menuGrid = document.getElementById('menuGrid');
+        products.forEach(p => {
+            // Opcional: No mostrar los favoritos repetidos si quisieras, pero aquí los mostramos todos
+            menuGrid.innerHTML += `
+                <div class="menu-card" onclick="openProductModal(${p.id})">
+                    <img src="${p.img}" class="menu-img-small">
+                    <div class="menu-content">
+                        <div class="menu-title">${p.name}</div>
+                        <p class="menu-desc">${p.desc}</p>
+                        <div class="menu-footer">
+                            <span style="color:var(--primary); font-weight:700;">S/ ${p.price.toFixed(2)}</span>
+                            <div class="btn-add"><i class="fas fa-plus"></i></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        /* --- MODAL LOGIC --- */
+        function openProductModal(id) {
+            currentProduct = products.find(p => p.id === id);
+            tempQty = 1; tempSauces = []; tempDrink = drinksOptions[0];
+            
+            document.getElementById('mImg').src = currentProduct.img;
+            document.getElementById('mTitle').innerText = currentProduct.name;
+            document.getElementById('mDesc').innerText = currentProduct.desc;
+            document.getElementById('modalQty').innerText = 1;
+            
+            const dContainer = document.getElementById('drinkList');
+            dContainer.innerHTML = '';
+            drinksOptions.forEach(d => {
+                const selected = d.name === tempDrink.name ? 'selected' : '';
+                const priceTxt = d.price > 0 ? `+S/${d.price}` : 'Incluido';
+                dContainer.innerHTML += `
+                    <div class="drink-option ${selected}" onclick="selectDrink(this, '${d.name}', ${d.price})">
+                        <div style="font-size:0.9rem;">${d.name} <span style="color:${d.price>0?'var(--primary)':'#666'}">(${priceTxt})</span></div>
+                        <div class="radio-check"></div>
+                    </div>
+                `;
+            });
+            
+            document.querySelectorAll('.sauce-option').forEach(el => el.classList.remove('selected'));
+            updateModalPrice();
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+        
+        function updateModalQty(change) {
+            if(tempQty + change >= 1) {
+                tempQty += change;
+                document.getElementById('modalQty').innerText = tempQty;
+                updateModalPrice();
+            }
+        }
+
+        function toggleSauce(el, name) {
+            if(tempSauces.includes(name)) {
+                tempSauces = tempSauces.filter(s => s !== name);
+                el.classList.remove('selected');
+            } else {
+                if(tempSauces.length < 3) {
+                    tempSauces.push(name);
+                    el.classList.add('selected');
+                } else alert("Máximo 3 salsas");
+            }
+        }
+
+        function selectDrink(el, name, price) {
+            tempDrink = { name, price };
+            document.querySelectorAll('.drink-option').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
+            updateModalPrice();
+        }
+
+        function updateModalPrice() {
+            const total = (currentProduct.price + tempDrink.price) * tempQty;
+            document.getElementById('modalTotalPrice').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        /* --- CARRITO LOGIC --- */
+        function addToCart() {
+            cart.push({
+                product: currentProduct,
+                qty: tempQty,
+                sauces: [...tempSauces],
+                drink: tempDrink,
+                subtotal: (currentProduct.price + tempDrink.price) * tempQty
+            });
+            updateStickyCart();
+            closeProductModal();
+        }
+
+        function updateStickyCart() {
+            const bar = document.getElementById('stickyCartBar');
+            if(cart.length > 0) {
+                const count = cart.reduce((a,b)=>a+b.qty,0);
+                const total = cart.reduce((a,b)=>a+b.subtotal,0);
+                document.getElementById('stickyCount').innerText = `${count} Ítems`;
+                document.getElementById('stickyTotal').innerText = `S/ ${total.toFixed(2)}`;
+                bar.classList.add('visible');
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cartDrawer');
+            const overlay = document.getElementById('cartOverlay');
+            if(drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+            } else {
+                renderCartDrawer();
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+            }
+        }
+
+        function renderCartDrawer() {
+            const container = document.getElementById('cartItemsContainer');
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666; margin-top:50px;">Tu carrito está vacío</p>';
+                document.getElementById('cartDrawerTotal').innerText = 'S/ 0.00';
+                return;
+            }
+            container.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.subtotal;
+                const sauces = item.sauces.length ? `<br><small style="color:#888">• Salsas: ${item.sauces.join(', ')}</small>` : '';
+                const drink = `<br><small style="color:#888">• Bebida: ${item.drink.name}</small>`;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>${item.qty}x ${item.product.name}</span>
+                            <span style="color:var(--primary)">S/ ${item.subtotal.toFixed(2)}</span>
+                        </div>
+                        ${drink} ${sauces}
+                        <div style="text-align:right; margin-top:10px; color:#ff4444; font-size:0.8rem; cursor:pointer;" onclick="removeItem(${index})"><i class="fas fa-trash"></i> Eliminar</div>
+                    </div>
+                `;
+            });
+            document.getElementById('cartDrawerTotal').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateStickyCart();
+            renderCartDrawer();
+            if(cart.length === 0) toggleCart();
+        }
+
+        function checkoutWhatsApp() {
+            if(cart.length === 0) return;
+            const phone = "51989435125";
+            let msg = "Hola KI-KÍN, quiero hacer el siguiente pedido:%0A%0A";
+            let total = 0;
+            cart.forEach(item => {
+                msg += `▪️ ${item.qty}x *${item.product.name}* (S/ ${item.subtotal.toFixed(2)})%0A`;
+                msg += `   Bebida: ${item.drink.name}%0A`;
+                if(item.sauces.length) msg += `   Salsas: ${item.sauces.join(', ')}%0A`;
+                msg += `%0A`;
+                total += item.subtotal;
+            });
+            msg += `*TOTAL A PAGAR: S/ ${total.toFixed(2)}*`;
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+        }
+
+        /* --- SCROLL ANIMATION --- */
+        window.addEventListener('scroll', reveal);
+        function reveal() {
+            var reveals = document.querySelectorAll('.reveal');
+            for(var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if(elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                } else {
+                    reveals[i].classList.remove('active');
+                }
+            }
+        }
+        reveal(); // Trigger initial check
+    </script>
+</body>
+</html>
